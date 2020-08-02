@@ -19,6 +19,8 @@ func Println(in ...interface{}) {
 			fmt.Printf("%+v\t", in[i])
 		case reflect.Slice:
 			fmt.Printf("%s\t", in[i])
+		case reflect.Struct: //结构
+			fmt.Printf("%+v\t", in[i])
 		default:
 			fmt.Printf("%v\t", in[i])
 		}
@@ -27,20 +29,26 @@ func Println(in ...interface{}) {
 }
 
 func Logln(in ...interface{}) {
+	var typ = make(map[reflect.Kind]string)
+	typ[reflect.Array] = "%s"
+	typ[reflect.Chan] = "%v"
+	typ[reflect.Map] = "%c"
+	typ[reflect.Ptr] = "%+v"
+	typ[reflect.Slice] = "%s"
+	typ[reflect.Struct] = "%+v"
+	var stringSlice = make([]string, 0)
 	for i := 0; i < len(in); i++ {
-		switch reflect.TypeOf(in[i]).Kind() { //指针
-		case reflect.Array:
-			log.Printf("%s", in[i])
-		case reflect.Chan:
-			log.Printf("%v", in[i])
-		case reflect.Map:
-			log.Printf("%c", in[i])
-		case reflect.Ptr: // 结构指针
-			log.Printf("%+v", in[i])
-		case reflect.Slice:
-			log.Printf("%s", in[i])
-		default:
-			log.Printf("%v", in[i])
+		if v, ok := typ[reflect.TypeOf(in[i]).Kind()]; ok {
+			stringSlice = append(stringSlice, v)
+			stringSlice = append(stringSlice, "\t")
+		} else {
+			stringSlice = append(stringSlice, "%v")
+			stringSlice = append(stringSlice, "\t")
 		}
 	}
+	stringPormat := ""
+	for i := 0; i < len(stringSlice); i++ {
+		stringPormat = stringPormat + stringSlice[i]
+	}
+	log.Printf(stringPormat, in...)
 }

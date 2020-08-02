@@ -27,5 +27,6 @@ func TestLog(t *testing.T) {
 	c := "dfadsfasd"
 	d := []string{"dfdf", "dfsafdsf"}
 	var ca = cat{s: 1, i: "string", u: []byte{'1', 'a'}}
-	Logln(a, b, c, d, ca)
+	e := map[byte]byte{'a': 'b'}
+	Logln(a, b, c, d, ca, e)
 }
